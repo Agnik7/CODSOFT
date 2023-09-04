@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Hind', sans-serif;
+}
+:root{
+    --bg-body: #FFEAEC;
+    --bg-facts: #6DB1BF;
+    --bg-header:#301A4B;
+    --bg-achievement:#F39A9D;
+    --bg-tinted: #606c38;
+}
+html{
+    scroll-behavior: smooth;
+    
+}
+body{
+    background-color: var(--bg-body);
+    min-height: 100vh;
+}
+.container{
+    padding: 2rem 0;
+}
+.header{
+    font-size: 3rem;
+    text-align: center;
+    color: var(--bg-header);
+}
+
+/*Styling the about section*/
+.intro, .notable-work .content{
+    padding: 2rem 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.intro .about-section{
+    max-width: 60%;
+}
+h2{
+    font-size: 2.5rem;
+    margin: 0rem 1rem 1rem; 
+    color: var(--bg-header);
+}
+.intro .about-section .description{
+    font-size: 1.3rem;
+    margin: 0 1rem;
+}
+.intro .about-section .description p{
+    margin-bottom: 1rem;
+}
+.intro .image-section img{
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+}
+
+
+/* Styling the interesting facts section */
+.facts{
+    background-color: var(--bg-facts);
+    width: 100%;
+    padding: 2rem;
+}
+.facts .facts-section{
+    padding: 2rem;
+    font-size: 1.3rem;
+    
+}
+.facts-list{
+    list-style: disc;
+}
+.facts-list .item{
+    margin-bottom: 1rem;
+}
+
+
+/* Styling Achievements and Notable Work Section */
+.notable-work{
+    background-color: var(--bg-achievement);
+    padding: 2rem;
+}
+.notable-work .work-section{
+    max-width: 50%;
+    font-size: 1.3rem;
+}
+
+footer{
+    font-size: 1.1rem;
+}
+
+/*Making site responsive*/
+@media (max-width:870px) {
+    .intro{
+        flex-direction: column-reverse;
+    }
+    .notable-work .content{
+        flex-direction: column;
+    }
+}
