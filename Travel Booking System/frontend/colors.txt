@@ -1,0 +1,5 @@
+light: #fdf0d5
+dark: #003049
+dark-accent: #669bbc
+musk-accent: #c1121f
+musk: #780000
