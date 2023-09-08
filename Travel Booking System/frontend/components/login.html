@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login User</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    Login Page
+<body class="bg-[#fdf0d5]">
+    <main class="container flex flex-col lg:flex-row ">
+        <section class="image-section flex justify-center items-center bg-[#003049] w-screen lg:w-[30rem] lg:h-screen">
+            <img src="../images/login-image.png" alt="Register Image">
+        </section>
+        <section class="form-section p-[5rem] lg:mx-[3rem]">
+            <h1 class="form-title text-[3rem] font-medium mb-[2rem]">Login</h1>
+            <div class="form flex items-center flex-col gap-[3rem]">
+                <input type="email" name="Email" placeholder="Email" id="email" class="bg-[transparent] border-b-4 outline-none border-[#780000] text-[1.3rem] px-2">
+                <input type="password" name="Password" placeholder="Password" id="password" class="bg-[transparent] border-b-4 outline-none border-[#780000] text-[1.3rem] px-2">
+                <button class="text-[1.5rem] text-slate-200 bg-[#780000] px-[3.5rem] lg:px-[7rem] py-[0.5rem] hover:text-black hover:bg-[#c1121f] rounded-full" id="login">Login</button>
+                <p class="text-[1.3rem]">Not a user? <a href="./register.html" class="underline font-medium">Register</a></p>
+            </div>
+
+        </section>
+    </main>
 </body>
 </html>
