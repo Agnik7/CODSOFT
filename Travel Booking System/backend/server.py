@@ -55,7 +55,9 @@ def register_user():
 
 @app.route('/login_user', methods=['POST'])
 def login_user():
+    print("============== Login ===============")
     data = request.json
+
     email = data.get('email')
     password = data.get('password')
     print(f"=======email:{email} password:{password}=========")
