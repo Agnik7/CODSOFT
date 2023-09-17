@@ -91,5 +91,36 @@ def reset():
     else:
         return jsonify({"message": "Error occurred while changing password."}), 500
 
+
+@app.route('/get_airline',methods=['GET'])
+def get_airline():
+    auth_header = request.headers.get('Authorization')
+    token = ''
+    if auth_header:
+        token = auth_header.split(" ")[1]
+    else:
+        token = ''
+    from_dest = request.args.get('from_dest')
+    to_dest = request.args.get('to_dest')
+    cabin_class = request.args.get('cabin_class')
+    trip_type = request.args.get('trip_type')
+    departure = request.args.get('departure')
+    seats = request.args.get('seats')
+    flight_details = database.get_flights(from_dest, to_dest, cabin_class, trip_type, departure, seats)
+    
+    # Check if any of the lists are empty
+    if all(flight_details):
+        return jsonify({
+            "flightName": flight_details[0],
+            "flightNumber": flight_details[1],
+            "availableSeats": flight_details[2],
+            "departureTime": flight_details[3],
+            "arrivalTime": flight_details[4],
+            "date": flight_details[5],
+            "price": flight_details[6]
+        }), 200
+    else:
+        return jsonify({"message": "No flights available"}), 404
+
 if __name__ == "__main__" :
         app.run(host='localhost', port=9000, debug=True)

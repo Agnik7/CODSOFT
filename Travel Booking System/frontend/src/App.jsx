@@ -5,6 +5,7 @@ import LandingPage from './components/LandingPage';
 import Register from './components/Register';
 import Login from './components/Login';
 import Book from './components/Book';
+import Flights from './components/Flights';
 function App() {
 
   return (
@@ -21,6 +22,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path='/book' element={<Book/>}/>
+        </Routes>
+        <Routes>
+          <Route path='/flights' element={<Flights/>}/>
         </Routes>
       </BrowserRouter>
     </div>

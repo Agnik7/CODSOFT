@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import uuid
 from pymongo import MongoClient
 import bcrypt
@@ -12,6 +13,8 @@ else:
 
 USER_DATABASE = CLIENT.get_database("globetrotters")
 USER_DETAILS = USER_DATABASE['user_database']
+
+FLIGHT_DB = CLIENT.get_database("flights_db")
 
 class Database:
     
@@ -74,3 +77,41 @@ class Database:
         else:
             print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx Error occurred while changing the password xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             return False
+    
+    def get_flights(self, from_dest, to_dest, cabin_class, trip_type, departure, seats):
+        # Initialize lists to store flight information        
+        flight_names = []
+        flight_number=[]
+        available_seats = []
+        departure_times = []
+        arrival_times = []
+        date=[]
+        price=[]
+        # Convert the 'departure' string to a datetime object
+
+        # Iterate through the collections in FLIGHT_DB
+        for collection_name in ['BreezeAir', 'FlyJet', 'StarGlide']:
+            collection = FLIGHT_DB.get_collection(collection_name)
+            
+            # Query for flights matching the 'from', 'to', and 'date' criteria
+            query = {
+                'from': from_dest,
+                'to': to_dest,
+                'date': {'$gte': departure}  # Date should be on or after 'departure'
+            }
+            cursor = collection.find(query)
+
+            # Extract flight information and append to respective lists
+            for flight in cursor:
+                flight_names.append(collection_name)
+                flight_number.append(flight['_id'])
+                available_seats.append(flight['seats_available'])
+                departure_times.append(flight['departure_time'])
+                arrival_times.append(flight['arrival_time'])
+                date.append(flight['date'])
+                price.append(flight['price'])
+        # Create a list 'l' containing the flight information lists
+        l = [flight_names,flight_number, available_seats, departure_times, arrival_times,date,price]
+
+        return l
+

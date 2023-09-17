@@ -1,4 +1,6 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Bk from '../assets/book-image.png';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -10,6 +12,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 export default function Book() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token')
   const [purpose, setPurpose] = useState('');
   const [fromDest,setFromDest] = useState('');
   const [toDest,setToDest] = useState('');
@@ -22,15 +26,60 @@ export default function Book() {
   const [checkIn, setCheckIn] = useState(dayjs()); 
   const [checkOut, setCheckOut] = useState(dayjs()); 
   const [roomType,setRoomType]= useState('');
-  const handleAirlineBook=()=>{
-    console.log("Purpose: " + purpose);
-    console.log("From: " + fromDest);
-    console.log("To: " + toDest);
-    console.log("Cabin Class: " + cabinClass);
-    console.log("Trip Type: " + tripType);
-    console.log("Departure: " + departure.format('MM/DD/YYYY'));
-    console.log("People: " + people);
+
+
+  /* const [flightName, setFlightName] = useState([]);
+  const [flightNumber, setFlightNumber] = useState([]);
+  const [availableSeats, setAvailableSeats] = useState([]);
+  const [departureTime, setDepartureTime] = useState([]);
+  const [arrivalTime, setArrivalTime] = useState([]);
+  const [date,setDate] = useState([]);
+  const [price,setPrice] = useState([]); */
+  const [flightData, setFlightData] = useState({
+    flightName: [],
+    flightNumber: [],
+    availableSeats: [],
+    departureTime: [],
+    arrivalTime: [],
+    date: [],
+    price: [],
+    fromDest:'',
+    toDest:''
+  });
+  const handleAirlineBook= async()=>{
+    const dept = departure.format('DD/MM/YYYY');
+    await axios.get(`http://localhost:9000/get_airline?from_dest=${fromDest}&to_dest=${toDest}&cabin_class=${cabinClass}&trip_type=${tripType}&departure=${dept}&seats=${people}`,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials:true
+    })
+    .then((res)=>{
+      const responseData = res.data;
+      console.log(responseData);
+      setFlightData({
+        flightName: responseData.flightName,
+        flightNumber: responseData.flightNumber,
+        availableSeats: responseData.availableSeats,
+        departureTime: responseData.departureTime,
+        arrivalTime: responseData.arrivalTime,
+        date: responseData.date,
+        price: responseData.price,
+        fromDest: fromDest,
+        toDest: toDest
+      });
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+    
   }
+  useEffect(() => {
+    if (flightData.flightName.length > 0) {
+      alert("Go");
+      navigate('/flights', { state: {flightData:flightData} });
+    }
+  }, [flightData]);
   const handleHotelBook = ()=>{
     console.log("Hotel Book");
   }
@@ -126,7 +175,7 @@ export default function Book() {
               <TextField id="people" label="Number of People" variant="outlined" type='number' InputLabelProps={{shrink:true}} value={people} onChange={(e)=>{setPeople(e.target.value)}}/>
             </div>
             <div className='flex justify-center items-center'>
-              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-airline" onClick={handleAirlineBook}>Search</button>              
+              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-airline" onClick={handleAirlineBook}>Search Flights</button>              
             </div>
           </section>)}
           {purpose==='Hotel' &&(<section className="hotel">
@@ -170,7 +219,7 @@ export default function Book() {
               <TextField id="people-num" label="Number of Rooms" variant="outlined" type='number' InputLabelProps={{shrink:true}} value={rooms} onChange={(e)=>{setRooms(e.target.value)}}/>
             </div>
             <div className='flex justify-center items-start'>
-              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-hotel" onClick={handleHotelBook}>Search</button>
+              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-hotel" onClick={handleHotelBook}>Search Hotels</button>
             </div>
           </section>)}
           </section>
