@@ -117,10 +117,27 @@ def get_airline():
             "departureTime": flight_details[3],
             "arrivalTime": flight_details[4],
             "date": flight_details[5],
-            "price": flight_details[6]
+            "price": flight_details[6],
+            "trip_type":flight_details[7],
+            "cabin_class":flight_details[8]
         }), 200
     else:
         return jsonify({"message": "No flights available"}), 404
+    
+@app.route('/book_tickets',methods=['POST'])
+def book_tickets():
+    data = request.json
+    id = data.get('id')
+    name = data.get('name')
+    people = data.get('people')
+    if not name or not id or not people:
+        return jsonify({"message":"Insufficient data given"}),401
+    book = database.book_flight_ticket(id,name,people)
+    if book:
+        return jsonify({"message":"Flights booked successfully!!"}),200
+    else:
+        return jsonify({"message:" "Encountered unexpected error"}),500
+
 
 if __name__ == "__main__" :
         app.run(host='localhost', port=9000, debug=True)

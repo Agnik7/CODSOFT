@@ -1,11 +1,12 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import FlightCard from './FlightCard';
-
+import { Icon } from '@mui/material';
 export default function Flights() {
   const { state } = useLocation();
-  const handleClick=()=>{
-    console.log(state);
+  const navigate = useNavigate();
+  const handleBack=()=>{
+    navigate('/book');
     
   }
   const flightName = state.flightData.flightName;
@@ -17,7 +18,10 @@ export default function Flights() {
   const price = state.flightData.price;
   return (
     <div className='bg-[#260F26] min-h-screen'>
-      <h1 className='text-slate-50 text-[3rem] font-bold mx-[2rem]'>Flights from {state.flightData.fromDest} to {state.flightData.toDest}</h1>
+      <div className='flex flex-row items-center justify-between px-2'>
+        <h1 className='text-slate-50 text-[3rem] font-bold mx-[2rem]'>Flights from {state.flightData.fromDest} to {state.flightData.toDest}</h1>
+        <span class="material-symbols-outlined text-slate-50 text-[3rem] mr-[1rem] hover:cursor-pointer" onClick={handleBack}>arrow_back</span>
+      </div>
       <div className="flight-card-container w-full  flex flex-row flex-wrap justify-evenly">
       {flightNumber.map((number, index) => (
           <FlightCard
@@ -29,6 +33,9 @@ export default function Flights() {
             arrivalTime={arrivalTime[index]}
             date={date[index]}
             price={price[index]}
+            trip={state.flightData.tripType}
+            cabin={state.flightData.cabinClass}
+            people={state.flightData.people}
           />
         ))}
       </div>

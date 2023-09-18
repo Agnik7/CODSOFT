@@ -27,14 +27,6 @@ export default function Book() {
   const [checkOut, setCheckOut] = useState(dayjs()); 
   const [roomType,setRoomType]= useState('');
 
-
-  /* const [flightName, setFlightName] = useState([]);
-  const [flightNumber, setFlightNumber] = useState([]);
-  const [availableSeats, setAvailableSeats] = useState([]);
-  const [departureTime, setDepartureTime] = useState([]);
-  const [arrivalTime, setArrivalTime] = useState([]);
-  const [date,setDate] = useState([]);
-  const [price,setPrice] = useState([]); */
   const [flightData, setFlightData] = useState({
     flightName: [],
     flightNumber: [],
@@ -44,7 +36,10 @@ export default function Book() {
     date: [],
     price: [],
     fromDest:'',
-    toDest:''
+    toDest:'',
+    tripType:'',
+    cabinClass:'',
+    people:0
   });
   const handleAirlineBook= async()=>{
     const dept = departure.format('DD/MM/YYYY');
@@ -66,7 +61,10 @@ export default function Book() {
         date: responseData.date,
         price: responseData.price,
         fromDest: fromDest,
-        toDest: toDest
+        toDest: toDest,
+        cabinClass:cabinClass,
+        tripType:tripType,
+        people:people
       });
     })
     .catch(err=>{

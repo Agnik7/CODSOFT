@@ -87,8 +87,8 @@ class Database:
         arrival_times = []
         date=[]
         price=[]
-        # Convert the 'departure' string to a datetime object
-
+        trip=[]
+        cabin=[]
         # Iterate through the collections in FLIGHT_DB
         for collection_name in ['BreezeAir', 'FlyJet', 'StarGlide']:
             collection = FLIGHT_DB.get_collection(collection_name)
@@ -97,6 +97,8 @@ class Database:
             query = {
                 'from': from_dest,
                 'to': to_dest,
+                'trip_type':trip_type,
+                'cabin_class':cabin_class,
                 'date': {'$gte': departure}  # Date should be on or after 'departure'
             }
             cursor = collection.find(query)
@@ -110,8 +112,33 @@ class Database:
                 arrival_times.append(flight['arrival_time'])
                 date.append(flight['date'])
                 price.append(flight['price'])
+                trip.append(flight['trip_type'])
+                cabin.append(flight['cabin_class'])
         # Create a list 'l' containing the flight information lists
-        l = [flight_names,flight_number, available_seats, departure_times, arrival_times,date,price]
+        l = [flight_names,flight_number, available_seats, departure_times, arrival_times,date,price,trip,cabin]
 
         return l
+    
+    def book_flight_ticket(self, id, name, people):
+        collection = FLIGHT_DB.get_collection(name)
+        query = {
+            '_id': id,
+        }
+
+        # Update the 'seats_available' parameter as a string representation of 'people'
+        update_data = {
+            '$set': {
+                'seats_available': str(people)
+            }
+        }
+
+        # Perform the update operation
+        update_result = collection.update_one(query, update_data)
+
+        # Check if the update was successful
+        if update_result.modified_count == 1:
+            return True  # Success
+        else:
+            return False  # Flight with the given '_id' not found
+
 
