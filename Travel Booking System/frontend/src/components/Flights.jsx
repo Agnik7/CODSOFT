@@ -20,7 +20,7 @@ export default function Flights() {
     <div className='bg-[#260F26] min-h-screen'>
       <div className='flex flex-row items-center justify-between px-2'>
         <h1 className='text-slate-50 text-[3rem] font-bold mx-[2rem]'>Flights from {state.flightData.fromDest} to {state.flightData.toDest}</h1>
-        <span class="material-symbols-outlined text-slate-50 text-[3rem] mr-[1rem] hover:cursor-pointer" onClick={handleBack}>arrow_back</span>
+        <span className="material-symbols-outlined text-slate-50 text-[3rem] mr-[1rem] hover:cursor-pointer" onClick={handleBack}>arrow_back</span>
       </div>
       <div className="flight-card-container w-full  flex flex-row flex-wrap justify-evenly">
       {flightNumber.map((number, index) => (

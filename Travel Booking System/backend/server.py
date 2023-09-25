@@ -38,7 +38,6 @@ def register_user():
     email = data.get('email')
     
     password = data.get('password')
-    print(f"============ Password:{password} ===========")
     hash = Hash(password)
     if not name or not email or not password:
         return jsonify({"message": "Please provide all required fields."}), 400
@@ -60,7 +59,6 @@ def login_user():
 
     email = data.get('email')
     password = data.get('password')
-    print(f"=======email:{email} password:{password}=========")
     if not email or not password:
         return jsonify({"message": "Invalid credentials"}), 400
     login = database.login(email,password)
@@ -106,8 +104,9 @@ def get_airline():
     trip_type = request.args.get('trip_type')
     departure = request.args.get('departure')
     seats = request.args.get('seats')
+
     flight_details = database.get_flights(from_dest, to_dest, cabin_class, trip_type, departure, seats)
-    
+    print(cabin_class)
     # Check if any of the lists are empty
     if all(flight_details):
         return jsonify({
@@ -138,6 +137,47 @@ def book_tickets():
     else:
         return jsonify({"message:" "Encountered unexpected error"}),500
 
+@app.route('/get_hotel',methods=['GET'])
+def get_hotels():
+    auth_header = request.headers.get('Authorization')
+    token = ''
+    if auth_header:
+        token = auth_header.split(" ")[1]
+    else:
+        token = ''
+    check_in = request.args.get('check_in')
+    check_out = request.args.get('check_out')
+    location = request.args.get('location')
+    room_type = request.args.get('room_type')
+    people_num = request.args.get('people_num')
+    room_num = request.args.get('room_num')
+    room_type = room_type.upper()
+    hotel_details = database.get_hotels(check_in, check_out, location, room_type, people_num, room_num)
+    if all(hotel_details):
+        return jsonify({
+            "hotelName": hotel_details[0],
+            "hotelId": hotel_details[1],
+            "availableRooms": hotel_details[2],
+            "roomType": hotel_details[3],
+            "price": hotel_details[4]
+        }), 200
+    else:
+        return jsonify({"message": "No Rooms available"}), 404
+
+@app.route('/book_rooms',methods=['POST'])
+def book_rooms():
+    data = request.json
+    id = data.get('id')
+    name = data.get('name')
+    rooms = data.get('rooms')
+    location = data.get('location')
+    if not name or not id or not rooms or not location:
+        return jsonify({"message":"Insufficient data given"}),401
+    book = database.book_hotel_room(id,rooms, location)
+    if book:
+        return jsonify({"message":"Room(s) booked successfully!!"}),200
+    else:
+        return jsonify({"message:" "Encountered unexpected error"}),500
 
 if __name__ == "__main__" :
         app.run(host='localhost', port=9000, debug=True)

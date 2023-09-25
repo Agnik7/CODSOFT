@@ -41,6 +41,18 @@ export default function Book() {
     cabinClass:'',
     people:0
   });
+  const [hotelData, setHotelData] = useState({
+    hotelName: [],
+    hotelId: [],
+    availableRooms: [],
+    roomType: [],
+    price:[],
+    checkIn: '',
+    checkOut: '',
+    location: '',
+    people:0,
+    rooms: 0
+  });
   const handleAirlineBook= async()=>{
     const dept = departure.format('DD/MM/YYYY');
     await axios.get(`http://localhost:9000/get_airline?from_dest=${fromDest}&to_dest=${toDest}&cabin_class=${cabinClass}&trip_type=${tripType}&departure=${dept}&seats=${people}`,{
@@ -51,7 +63,6 @@ export default function Book() {
     })
     .then((res)=>{
       const responseData = res.data;
-      console.log(responseData);
       setFlightData({
         flightName: responseData.flightName,
         flightNumber: responseData.flightNumber,
@@ -66,6 +77,7 @@ export default function Book() {
         tripType:tripType,
         people:people
       });
+      console.log(flightData)
     })
     .catch(err=>{
       console.log(err);
@@ -74,13 +86,43 @@ export default function Book() {
   }
   useEffect(() => {
     if (flightData.flightName.length > 0) {
-      alert("Go");
       navigate('/flights', { state: {flightData:flightData} });
     }
   }, [flightData]);
-  const handleHotelBook = ()=>{
-    console.log("Hotel Book");
+  const handleHotelBook = async()=>{
+    const checked_in = checkIn.format('DD/MM/YYYY');
+    const checked_out = checkOut.format('DD/MM/YYYY');
+    await axios.get(`http://localhost:9000/get_hotel?check_in=${checked_in}&check_out=${checked_out}&location=${location}&room_type=${roomType}&people_num=${people}&room_num=${rooms}`,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials:true
+    })
+    .then((res)=>{
+      const responseData = res.data;
+      setHotelData({
+        hotelName: responseData.hotelName,
+        hotelId: responseData.hotelId,
+        availableRooms: responseData.availableRooms,
+        roomType:roomType,
+        price: responseData.price,
+        checkIn: checked_in,
+        checkOut: checked_out,
+        location: location,
+        people:people,
+        rooms:rooms
+      });
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+    
   }
+  useEffect(() => {
+    if (hotelData.hotelName.length > 0) {
+      navigate('/hotels', { state: {hotelData:hotelData} });
+    }
+  }, [hotelData]);
   return (
     <div>
       <main className='flex flex-col-reverse justify-center items-center lg:flex-row lg:justify-between'>
@@ -173,18 +215,11 @@ export default function Book() {
               <TextField id="people" label="Number of People" variant="outlined" type='number' InputLabelProps={{shrink:true}} value={people} onChange={(e)=>{setPeople(e.target.value)}}/>
             </div>
             <div className='flex justify-center items-center'>
-              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-airline" onClick={handleAirlineBook}>Search Flights</button>              
+              <button className="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-airline" onClick={handleAirlineBook}>Search Flights</button>              
             </div>
           </section>)}
           {purpose==='Hotel' &&(<section className="hotel">
             <div className='my-[2rem] flex flex-wrap gap-[2rem]  md:justify-between flex-row'>
-              <TextField
-                required
-                id="hotel-location"
-                label="Location"
-                value={location}
-                onChange={(e)=>{setLocation(e.target.value)}}
-              />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Check-in"
@@ -199,6 +234,20 @@ export default function Book() {
                   onChange={(value) => setCheckOut(value)}
                 />
               </LocalizationProvider>
+              <FormControl fullWidth>
+                <InputLabel id="location">Location</InputLabel>
+                <Select
+                  labelId="location"
+                  id="loc"
+                  value={location}
+                  label="Location"
+                  onChange={(e)=>{setLocation(e.target.value)}}
+                >
+                  <MenuItem value={'CCU'}>Kolkata</MenuItem>
+                  <MenuItem value={'DEL'}>Delhi</MenuItem>
+                  <MenuItem value={'BLR'}>Bangalore</MenuItem>
+                </Select>
+              </FormControl>
               <FormControl fullWidth>
                 <InputLabel id="room-type">Room Type</InputLabel>
                 <Select
@@ -217,12 +266,12 @@ export default function Book() {
               <TextField id="people-num" label="Number of Rooms" variant="outlined" type='number' InputLabelProps={{shrink:true}} value={rooms} onChange={(e)=>{setRooms(e.target.value)}}/>
             </div>
             <div className='flex justify-center items-start'>
-              <button class="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-hotel" onClick={handleHotelBook}>Search Hotels</button>
+              <button className="text-[1.5rem] text-slate-200 bg-[#003049] px-[3.5rem] py-[0.5rem] hover:text-black hover:bg-[#669bbc] rounded-full" id="search-hotel" onClick={handleHotelBook}>Search Hotels</button>
             </div>
           </section>)}
           </section>
         </section>
-        <section className="image-section flex items-center justify-center bg-[red] w-screen lg:h-screen lg:max-w-[35rem]">
+        <section className="image-section flex items-center justify-center bg-[#780000] w-screen lg:h-screen lg:max-w-[35rem]">
           <img src={Bk} alt="Book Image" />
         </section>
       </main>

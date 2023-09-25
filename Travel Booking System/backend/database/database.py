@@ -16,12 +16,13 @@ USER_DETAILS = USER_DATABASE['user_database']
 
 FLIGHT_DB = CLIENT.get_database("flights_db")
 
+HOTEL_DB = CLIENT.get_database("hotels_db")
+
 class Database:
     
     def __init__(self):
         self.name = ''
     def register(self,name, email, password):
-        print(f"=======================================\nName:{name}\nEmail:{email}\nPassword:{password}")
         existing_user = USER_DETAILS.find_one({"email": email})
         if existing_user:
             print("xxxxxxxxxxxxxxxxxxxxxxxxxxx Error: User already exists in the database.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
@@ -79,7 +80,6 @@ class Database:
             return False
     
     def get_flights(self, from_dest, to_dest, cabin_class, trip_type, departure, seats):
-        # Initialize lists to store flight information        
         flight_names = []
         flight_number=[]
         available_seats = []
@@ -89,21 +89,16 @@ class Database:
         price=[]
         trip=[]
         cabin=[]
-        # Iterate through the collections in FLIGHT_DB
         for collection_name in ['BreezeAir', 'FlyJet', 'StarGlide']:
             collection = FLIGHT_DB.get_collection(collection_name)
-            
-            # Query for flights matching the 'from', 'to', and 'date' criteria
             query = {
                 'from': from_dest,
                 'to': to_dest,
                 'trip_type':trip_type,
                 'cabin_class':cabin_class,
-                'date': {'$gte': departure}  # Date should be on or after 'departure'
+                'date': {'$gte': departure}
             }
             cursor = collection.find(query)
-
-            # Extract flight information and append to respective lists
             for flight in cursor:
                 flight_names.append(collection_name)
                 flight_number.append(flight['_id'])
@@ -114,7 +109,6 @@ class Database:
                 price.append(flight['price'])
                 trip.append(flight['trip_type'])
                 cabin.append(flight['cabin_class'])
-        # Create a list 'l' containing the flight information lists
         l = [flight_names,flight_number, available_seats, departure_times, arrival_times,date,price,trip,cabin]
 
         return l
@@ -124,21 +118,51 @@ class Database:
         query = {
             '_id': id,
         }
-
-        # Update the 'seats_available' parameter as a string representation of 'people'
         update_data = {
             '$set': {
                 'seats_available': str(people)
             }
         }
-
-        # Perform the update operation
         update_result = collection.update_one(query, update_data)
-
-        # Check if the update was successful
         if update_result.modified_count == 1:
-            return True  # Success
+            return True
         else:
-            return False  # Flight with the given '_id' not found
+            return False
 
-
+    def get_hotels(self, check_in, check_out, location, room_type, people_num, room_num):    
+        hotel_id = []
+        hotel_names = []
+        available_rooms = []
+        room_types = []
+        price = []
+        collection = HOTEL_DB[location]
+        query = {
+            'check_in': check_in,
+            'check_out': check_out,
+            'room_type': room_type, # Date should be on or after 'departure'
+        }
+        cursor = collection.find(query)
+        for hotel in cursor:
+            hotel_id.append(hotel['_id'])
+            hotel_names.append(hotel['hotel_name'])
+            available_rooms.append(hotel['rooms_available'])
+            room_types.append(hotel['room_type'])
+            price.append(hotel['price'])
+        l = [hotel_names,hotel_id, available_rooms, room_types, price]
+        return l
+    def book_hotel_room(self, id,rooms, location):
+        collection = HOTEL_DB.get_collection(location)
+        query = {
+            '_id': id,
+        }
+        update_data = {
+            '$set': {
+                'rooms_available': str(rooms)
+            }
+        }
+        update_result = collection.update_one(query, update_data)
+        if update_result.modified_count == 1:
+            return True
+        else:
+            return False
+        
