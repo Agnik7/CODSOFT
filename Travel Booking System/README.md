@@ -2,6 +2,11 @@
 
 Welcome to GlobeTrotters, your go-to travel booking website that simplifies the way you explore the world. With GlobeTrotters, we've got your travel needs covered, from booking flights to finding the perfect hotel room. This README file will provide you with all the essential information you need to get started.
 
+## Tech Stack:
+1. Frontend: **React.js** , **Tailwind CSS**, **Material UI**
+2. Backend: **Flask**
+3. Database: **MongoDB**
+
 ## Features
 
 GlobeTrotters offers a range of features to enhance your travel experience:
