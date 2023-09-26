@@ -33,9 +33,10 @@ npm install
 npm run dev
 ```
 
-4. Go to the `backend` directory now, and run the `server.py` file.
+4. Go to the `backend` directory now, install the dependencies and run the `server.py` file.
 ```bash
 cd backend
+pip install -r requirements.txt
 python server.py
 ```
 ### Note: Remember to set the environment variables wherever required. 
